@@ -2,6 +2,7 @@ package com.example.asm01.service;
 
 import com.example.asm01.dto.TicketRequest;
 import com.example.asm01.dto.TicketResponse;
+import com.example.asm01.dto.TicketSummaryResponse;
 import com.example.asm01.model.ParkingTicket;
 import com.example.asm01.model.Vehicle;
 import com.example.asm01.model.Zone;
@@ -11,16 +12,18 @@ import com.example.asm01.repository.ZoneRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
-public class ParkingServiceImpl implements ParkingService {
+public class TicketServiceImpl implements TicketService {
 
     private final VehicleRepository vehicleRepository;
     private final ZoneRepository zoneRepository;
     private final ParkingTicketRepository parkingTicketRepository;
 
-    public ParkingServiceImpl(
+    public TicketServiceImpl(
             VehicleRepository vehicleRepository,
             ZoneRepository zoneRepository,
             ParkingTicketRepository parkingTicketRepository
@@ -86,6 +89,20 @@ public class ParkingServiceImpl implements ParkingService {
                 zone.getName(),
                 ticket.getCheckInTime(),
                 ticket.getCheckOutTime()
+        );
+    }
+
+    @Override
+    @Transactional
+    public List<TicketSummaryResponse> getTodayTicketSummary() {
+        LocalDate today = LocalDate.now();
+
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime startOfNextDay = today.plusDays(1).atStartOfDay();
+
+        return parkingTicketRepository.findTodayTicketSummary(
+                startOfDay,
+                startOfNextDay
         );
     }
 }
