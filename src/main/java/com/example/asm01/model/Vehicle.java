@@ -28,8 +28,8 @@ public class Vehicle {
     private String color;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private VehicleType type;
+    @Column(name = "vehicle_type", nullable = false, length = 20)
+    private VehicleType vehicleType;
 
     @OneToMany(mappedBy = "vehicle")
     private List<ParkingTicket> parkingTickets = new ArrayList<>();
